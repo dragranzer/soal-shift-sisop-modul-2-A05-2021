@@ -44,14 +44,9 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    // close(STDIN_FILENO);
-    // close(STDOUT_FILENO);
-    // close(STDERR_FILENO);
-
     while(1) {
         unsigned long timestamp = time(NULL);
         if (timestamp >= BIRTHDAY_UNIX) {
-            printf("\nHappy Birthday, Stevany!\n");
             happyBirthdayStevany();
         }
         else {
@@ -73,12 +68,10 @@ void happyBirthdayStevany() {
     int status;
 
     if (child_id == 0) {
-        printf("Downloading stevany stuff, please wait...\n");
         downloadStevanyStuff();
     }
     else {
         while(wait(&status) > 0);
-        printf("Cleaning up, ehe...\n");
 
         pid_t child2_id;
 
@@ -94,7 +87,6 @@ void happyBirthdayStevany() {
         }
         else {
             while(wait(&status2) > 0);
-            printf("Well done.\nPress ENTER to close\n");
             exit(EXIT_SUCCESS);
         }
     }
