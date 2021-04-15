@@ -41,7 +41,7 @@ int main(){
     
         } else {
             // this is parent
-            sleep(5);
+            sleep(40);
         }
     }    
     return 0;
