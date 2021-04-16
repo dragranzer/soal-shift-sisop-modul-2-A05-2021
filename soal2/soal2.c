@@ -9,6 +9,8 @@
 #include <unistd.h>
 #include <wait.h>
 
+#define MAX 256
+
 #define PATH "/home/krisna/modul2/petshop"
 #define DEL_DIR_1 "/home/krisna/modul2/petshop/apex_cheats"
 #define DEL_DIR_2 "/home/krisna/modul2/petshop/musics"
@@ -98,11 +100,55 @@ void bst_inorder(BST *bst) {
     fclose(fp);
 }
 
-void deleteFiles();
-void extractFiles();
-void organizeFiles();
-void checkFiles();
-void makeSomeFolders();
+char fname[] = "jenis.txt";
+char temp[] = "temp.txt";
+char removed[MAX];
+
+void removeLine() {
+    int line, ctr = 0;
+    char ch;
+
+    FILE *fp1, *fp2;
+
+    // buat copy ke file temp
+    char str[MAX];
+
+    fp1 = fopen(fname, "r");
+    // can't open file
+    if (!fp1) {
+        printf("file cannot be opened\n");
+        return;
+    }
+
+    fp2 = fopen(temp, "w");
+    if (!fp2) {
+        printf("unable to make temp\n");
+        fclose(fp1);
+        return;
+    }
+
+    line = 0;
+    line++;
+
+    while (!feof(fp1)) {
+        strcpy(str, "\0");
+        fgets(str, MAX, fp1);
+
+        if (!feof(fp1)) {
+            ctr++;
+
+            if (ctr != line) {
+                fprintf(fp2, "%s", str);
+            }
+            else {
+                strcpy(removed, str);
+            }
+        }
+    }
+    fclose(fp1);
+    fclose(fp2);
+    remove(fname);
+}
 
 void cutAtChar(char *str, char c) {
     if (!str) return;
@@ -112,6 +158,14 @@ void cutAtChar(char *str, char c) {
     *str = '\0';
     return;
 }
+
+void deleteFiles();
+void extractFiles();
+void organizeFiles();
+void checkFiles();
+void makeSomeFolders();
+
+void __makeSomeFolders();
 
 int main() {
     pid_t pid, sid;
@@ -208,18 +262,70 @@ void checkFiles() {
         }
         bst_inorder(&myBST);
 
-        // char *argv[] = {"echo", "hadeh", NULL};
-        // execv("/bin/echo", argv);
+        makeSomeFolders();
+        // char *argv[] = {"rm", "-f", "jenis.txt", NULL};
+        // execv("/bin/rm", argv);
         exit(EXIT_SUCCESS);
     }
 }
 
 void makeSomeFolders() {
+    int N = 15;
+    int i=0;
+
+    int status;
+    
+    for (int i = 0; i < N; i++) {
+        pid_t child;
+        child = fork();
+        CHECK_FORK_SUCCESS(child)
+        
+        if (child == 0) {
+            __makeSomeFolders();
+            __makeSomeFoldersHelper();
+        }
+        else {
+            while(wait(&status) > 0);
+        }
+    }
+}
+
+void __makeSomeFolders() {
+    pid_t child;
+    child = fork();
+    CHECK_FORK_SUCCESS(child)
+
+    if (chdir("home/krisna/modul2/petshop/") < 0) exit(EXIT_FAILURE);
+
+    int status;
+
+    if (child == 0) {
+        removeLine();
+        int len = strlen(removed);
+
+        if (len != 0) {
+            char *argv[] = {"mkdir", "-p", removed, NULL};
+            execv("/bin/mkdir", argv);
+        } 
+    }
+    else {
+        while(wait(&status) > 0);
+    }
+}
+void __makeSomeFoldersHelper() {
     pid_t child;
     child = fork();
     CHECK_FORK_SUCCESS(child)
 
     int status;
+
+    if (child == 0) {
+        char *argv[] = {"mv", temp, fname, NULL};
+        execv("/bin/mv", argv);    
+    }
+    else {
+        while(wait(&status) > 0);
+    }
 }
 
 void deleteFiles() {
