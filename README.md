@@ -41,14 +41,15 @@ Ulang tahun Stevany adalah 09 April 2021 22.22.00 WIB. Ulang tahun Stevany dalam
 
 Unix Timestamp digunakan untuk mengecek apakah waktu ulang tahun telah tercapai dengan menggunakan loop _while_. Berikut ini _pseudocode_-nya
 ```
+state = 0
 while True
   timestamp = get_current_timestamp
-  if timestamp >= birthday_unix_timestamp
+  if timestamp >= birthday_unix_timestamp && state == 1
     zip_birthday_asset()
     break
-  else if timestamp >= six_hour_before_birthday_unix_timestamp
+  else if timestamp >= six_hour_before_birthday_unix_timestamp && state == 0
+    state = 1
     download_birthday_asset()
-    break
   else {
     sleep 1
   }
@@ -132,26 +133,13 @@ mkdir Pyoto
 ```
 
 Selanjutnya, proses pemilahan dilakukan dengan cara:
-1. Lakukan scan di dalam directory FILM dan pindahkan semua file berektensi .mp4 ke dalam folder Fylm (E.3.1)
-2. Lakukan scan di dalam directory MUSIK dan pindahkan semua file berektensi .mp3 ke dalam folder Musyik (E.3.2)
-3. Lakukan scan di dalam directory FOTO dan pindahkan semua file berektensi .jpg ke dalam folder Pyoto (E.3.3)
+1. Lakukan scan di dalam directory FILM dan pindahkan semua file berektensi .mp4 ke dalam folder Fylm
+2. Lakukan scan di dalam directory MUSIK dan pindahkan semua file berektensi .mp3 ke dalam folder Musyik
+3. Lakukan scan di dalam directory FOTO dan pindahkan semua file berektensi .jpg ke dalam folder Pyoto
 
-E.3.1
-```
-mv FILM/*.mp4 Fylm
-```
+Pemilahan dilakukan dengan menggunakan `#include <dirent.h>` dengan menyeleksi ektensi dari setiap file yang ada.
 
-E.3.2
-```
-mv MUSIK/*.mp3 Musyik
-```
-
-E.3.1
-```
-mv FOTO/*.jpg Pyoto
-```
-
-Setelah ketiga perintah di atas dijalankan, folder FOTO tidak kosong.
+Di akhir operasi, folder FOTO tidak kosong.
 Di deskripsi soal, tertera bahwa file berektensi .jpg saja yang masuk ke folder Pyoto.
 Oleh karena itu, file yang tidak berektensi .jpg tidak dipindahkan ke folder Pyoto.
 
