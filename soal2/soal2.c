@@ -166,6 +166,7 @@ void checkFiles();
 void makeSomeFolders();
 
 void __makeSomeFolders();
+void __makeSomeFoldersHelper();
 
 int main() {
     pid_t pid, sid;
@@ -200,7 +201,6 @@ int main() {
             organizeFiles();
         }
         else {
-            // printf("hai\n");
             break;
         }
     }
@@ -263,8 +263,6 @@ void checkFiles() {
         bst_inorder(&myBST);
 
         makeSomeFolders();
-        // char *argv[] = {"rm", "-f", "jenis.txt", NULL};
-        // execv("/bin/rm", argv);
         exit(EXIT_SUCCESS);
     }
 }
