@@ -22,6 +22,8 @@
 char jenis[15][10];
 int i = 0;
 
+char petName[10];
+
 FILE *fp;
 
 typedef struct bstnode_t {
@@ -159,6 +161,24 @@ void cutAtChar(char *str, char c) {
     return;
 }
 
+void processFileName(char *str) {
+    int i = 0;
+    while (str[i] != ';') {
+        i++;
+    }
+    int j = 0;
+    char name[10];
+    i++;
+
+    while(str[i] != ';') {
+        petName[j] = str[i];
+        j++;
+        i++;
+    }
+
+    petName[j] = '\0';
+}
+
 void deleteFiles();
 void extractFiles();
 void organizeFiles();
@@ -168,6 +188,7 @@ void moveFiles();
 
 void __makeSomeFolders();
 void __makeSomeFoldersHelper();
+void __moveFiles(char *fileName);
 
 int main() {
     pid_t pid, sid;
@@ -247,7 +268,8 @@ void moveFiles() {
             while ((dir = readdir(d)) != NULL) {
                 char *ret = strstr(dir->d_name, ".jpg");
                 if (ret) {
-                    printf("%s\n", dir->d_name);
+                    // printf("%s\n", dir->d_name);
+                    __moveFiles(dir->d_name);
                 }
             }
             closedir(d);
@@ -256,6 +278,12 @@ void moveFiles() {
         char *argv[] = {"echo", "hadeh", NULL};
         execv("/bin/echo", argv);
     }
+}
+
+void __moveFiles(char *fileName) {
+    // printf("in func: %s\n", fileName);
+    processFileName(fileName);
+    printf("hasil: %s\n", petName);
 }
 
 void checkFiles() {
