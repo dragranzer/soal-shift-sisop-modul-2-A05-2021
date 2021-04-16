@@ -17,9 +17,101 @@
 #define CHANGE_TO_ROOT if (chdir("/") < 0) exit(EXIT_FAILURE);
 #define CHECK_FORK_SUCCESS(x) if (x < 0) exit(EXIT_FAILURE);
 
+char jenis[15][10];
+int i = 0;
+
+FILE *fp;
+
+typedef struct bstnode_t {
+    char str[10];
+    struct bstnode_t \
+        *left, *right;
+} BSTNode;
+typedef struct bst_t {
+    BSTNode *_root;
+    unsigned int _size;
+} BST;
+
+BSTNode* __bst__createNode(char *str) {
+    BSTNode *newNode = (BSTNode*) malloc(sizeof(BSTNode));
+    strcpy(newNode->str, str);
+    newNode->left = newNode->right = NULL;
+    return newNode;
+}
+BSTNode* __bst__insert(BSTNode *root, char *str) {
+    if (root == NULL) 
+        return __bst__createNode(str);
+
+    if (strcmp(str, root->str) < 0)
+        root->left = __bst__insert(root->left, str);
+    if (strcmp(str, root->str) > 0)
+        root->right = __bst__insert(root->right, str);
+    
+    return root;
+}
+BSTNode* __bst__search(BSTNode *root, char *str) {
+    while (root != NULL) {
+        if (strcmp(str, root->str) < 0)
+            root = root->left;
+        else if (strcmp(str, root->str) > 0)
+            root = root->right;
+        else
+            return root;
+    }
+    return root;
+}
+void __bst__inorder(BSTNode *root) {
+    if (root) {
+        __bst__inorder(root->left);
+        fprintf(fp, "%s\n", root->str);
+        __bst__inorder(root->right);
+    }
+}
+
+void bst_init(BST *bst) {
+    bst->_root = NULL;
+    bst->_size = 0u;
+}
+bool bst_isEmpty(BST *bst) {
+    return bst->_root == NULL;
+}
+bool bst_find(BST *bst, char *str) {
+    BSTNode *temp = __bst__search(bst->_root, str);
+    if (temp == NULL)
+        return false;
+    
+    if (strcmp(temp->str, str) == 0)
+        return true;
+    else
+        return false;
+}
+void bst_insert(BST *bst, char* str) {
+    if (!bst_find(bst, str)) {
+        bst->_root = __bst__insert(bst->_root, str);
+        bst->_size++;
+    }
+}
+
+void bst_inorder(BST *bst) {
+    fp = fopen("/home/krisna/modul2/petshop/jenis.txt", "w+");
+    __bst__inorder(bst->_root);
+    fclose(fp);
+}
+
 void deleteFiles();
 void extractFiles();
 void organizeFiles();
+void checkFiles();
+void makeSomeFolders();
+
+void cutAtChar(char *str, char c) {
+    if (!str) return;
+
+    while (*str != '0' && *str != c) str++;
+
+    *str = '\0';
+    return;
+}
 
 int main() {
     pid_t pid, sid;
@@ -70,13 +162,64 @@ void organizeFiles() {
     int status;
 
     if (child == 0) {
+        checkFiles();
+    }
+    else {
+        while(wait(&status) > 0);
+
+        char *argv[] = {"echo", "setres", NULL};
+        execv("/bin/echo", argv);
+    }
+}
+
+void checkFiles() {
+    pid_t child;
+    child = fork();
+    CHECK_FORK_SUCCESS(child)
+
+    int status;
+
+    if (child == 0) {
         deleteFiles();
     }
     else {
         while(wait(&status) > 0);
-        char *argv[] = {"echo", "hadeh", NULL};
-        execv("/bin/echo", argv);
+
+        BST myBST;
+        bst_init(&myBST);
+
+        DIR *d;
+        struct dirent *dir;
+        d = opendir("/home/krisna/modul2/petshop/.");
+        if (d) {
+            while ((dir = readdir(d)) != NULL) {
+                if (strcmp(dir->d_name, ".") == 0 || strcmp(dir->d_name, "..") == 0) {
+                    
+                }
+                else {
+                    char temp[100];
+                    strcpy(temp, dir->d_name);
+                    
+                    cutAtChar(temp, ';');
+                    bst_insert(&myBST, temp);
+                }
+            }
+            closedir(d);
+        }
+        bst_inorder(&myBST);
+
+        // char *argv[] = {"echo", "hadeh", NULL};
+        // execv("/bin/echo", argv);
+        exit(EXIT_SUCCESS);
     }
+}
+
+void makeSomeFolders() {
+    pid_t child;
+    child = fork();
+    CHECK_FORK_SUCCESS(child)
+
+    int status;
 }
 
 void deleteFiles() {
