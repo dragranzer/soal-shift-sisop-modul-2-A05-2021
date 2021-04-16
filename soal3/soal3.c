@@ -210,7 +210,7 @@ void phrase_3d(){
     exit(EXIT_FAILURE);
   }
 
-  char text_to_write[50] = "killall soal3\nrm Killer.sh";
+  char text_to_write[50] = "#!/bin/bash\n\nkillall soal3\nrm Killer.sh";
   fprintf(fptr, "%s", text_to_write);
   fclose(fptr);
 }
