@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <wait.h>
 
-#define DEBUG_ON
+// #define DEBUG_ON
 
 // 9 Apr 2021 22:22:00 GMT+07
 #define BIRTHDAY_UNIX 1617981720
