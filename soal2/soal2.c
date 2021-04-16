@@ -164,6 +164,7 @@ void extractFiles();
 void organizeFiles();
 void checkFiles();
 void makeSomeFolders();
+void moveFiles();
 
 void __makeSomeFolders();
 void __makeSomeFoldersHelper();
@@ -216,12 +217,43 @@ void organizeFiles() {
     int status;
 
     if (child == 0) {
-        checkFiles();
+        moveFiles();
     }
     else {
         while(wait(&status) > 0);
 
         char *argv[] = {"echo", "setres", NULL};
+        execv("/bin/echo", argv);
+    }
+}
+
+void moveFiles() {
+    pid_t child;
+    child = fork();
+    CHECK_FORK_SUCCESS(child)
+
+    int status;
+
+    if (child == 0) {
+        checkFiles();
+    }
+    else {
+        while(wait(&status) > 0);
+
+        DIR *d;
+        struct dirent *dir;
+        d = opendir("/home/krisna/modul2/petshop/.");
+        if (d) {
+            while ((dir = readdir(d)) != NULL) {
+                char *ret = strstr(dir->d_name, ".jpg");
+                if (ret) {
+                    printf("%s\n", dir->d_name);
+                }
+            }
+            closedir(d);
+        }
+
+        char *argv[] = {"echo", "hadeh", NULL};
         execv("/bin/echo", argv);
     }
 }
