@@ -293,10 +293,6 @@ int main() {
             organizeFiles();
         }
         else {
-            // char *argv[] = {"rm", "-rf", DEL_DIR_1, DEL_DIR_2, DEL_DIR_3, NULL};
-            
-            // char *argv[] = {"pwd", NULL};
-            // execv("/bin/pwd", argv);
             break;
         }
     }
@@ -318,9 +314,6 @@ void organizeFiles() {
         while(wait(&status) > 0);
         char *argv[] = {"rm", "-f", "/home/krisna/modul2/petshop/jenis.txt", NULL};
         execv("/bin/rm", argv);
-        // char *argv[] = {"echo", "setres", NULL};
-        // execv("/bin/echo", argv);
-        // exit(EXIT_SUCCESS);
     }
 }
 
@@ -355,7 +348,7 @@ void moveFiles() {
             closedir(d);
         }
 
-        char *argv[] = {"echo", "hadeh", NULL};
+        char *argv[] = {"echo", "", NULL};
         execv("/bin/echo", argv);
     }
 }
@@ -378,7 +371,6 @@ void __moveFiles(char *fileName) {
         exit(EXIT_SUCCESS);
     }
 }
-
 void __moveFilesHelper(char *fileName, char *folderDest, char *pet) {
     pid_t child;
     child = fork();
@@ -387,14 +379,7 @@ void __moveFilesHelper(char *fileName, char *folderDest, char *pet) {
     int status;
 
     if (child == 0) {
-        // char trueDest[MAX];
-        // strcpy(trueDest, PATH);
-        // strcat(trueDest, folderDest);
 
-        // printf("file: %s. dest: %s. pet name: %s.\n", fileName, trueDest, pet);
-
-        // char *argv[] = {"mv", fileName, pet, NULL};
-        // execv("/bin/mv", argv);
     }
     else {
         while(wait(&status) > 0);
@@ -407,8 +392,6 @@ void __moveFilesHelper(char *fileName, char *folderDest, char *pet) {
         char *argv[] = {"mv", "-f", fileName, folderDest, NULL};
         execv("/bin/mv", argv);
 
-        // char *argv[] = {"pwd", NULL};
-        // execv("/bin/pwd", argv);
         exit(EXIT_SUCCESS);
     }
 }
