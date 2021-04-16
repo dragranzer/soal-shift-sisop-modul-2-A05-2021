@@ -16,9 +16,8 @@
 #include <wait.h>
 
 void ConstructTimeNow(char*);
-void ConstructTimeNow2(char*);
-void ConstructTimeNowSpecial(char*);
 void ConstructDownloadLink(char* ,char*, char*);
+void encrypt(char* , char*);
 char format_name[50],temp[50];
 int main() {
     pid_t child_id;
@@ -90,6 +89,8 @@ int main() {
                     sleep(5);
                 }
             }
+            char notif[50]="Download Success", encrypted[50];
+            encrypt(notif,encrypted);
             k++;
             if(k==5)k=1;
         }
@@ -116,32 +117,23 @@ void ConstructDownloadLink(char *size ,char *link,char *name){
     sprintf(link,"https://picsum.photos/id/2/%s/%s",size,size);
 }
 
-void ConstructTimeNow2(char *format_name){
-    int hours, minutes, seconds, day, month, year;
-    time_t now;
-    time(&now);
-    struct tm *local = localtime(&now);
-    hours = local->tm_hour;          // get hours since midnight (0-23)
-    minutes = local->tm_min;         // get minutes passed after the hour (0-59)
-    seconds = local->tm_sec;         // get seconds passed after minute (0-59)
+void encrypt(char *text, char *encrypted)
+{
+    char result[100] = "";
+ 
+    // traverse text
+    for (int i=0;i!='\0';i++)
+    {
+        // apply transformation to each character
+        // Encrypt Uppercase letters
+        if (isupper(text[i]))
+            result[i] = ((text[i]+5-65)%26 +65);
             
-    day = local->tm_mday;            // get day of month (1 to 31)
-    month = local->tm_mon + 1;       // get month of year (0 to 11)
-    year = local->tm_year + 1900;    // get year since 1900
-    sprintf(format_name,"%d-%02d-%02d_%02d:%02d:%02d", year, month, day, hours, minutes, seconds-2);
+    // Encrypt Lowercase letters
+    else
+        result[i] = ((text[i]+5-97)%26 +97);
+    }
+
+    sprintf(encrypted,"%s",result);
 }
 
-void ConstructTimeNowSpecial(char *format_name){
-    int hours, minutes, seconds, day, month, year;
-    time_t now;
-    time(&now);
-    struct tm *local = localtime(&now);
-    hours = local->tm_hour;          // get hours since midnight (0-23)
-    minutes = local->tm_min;         // get minutes passed after the hour (0-59)
-    seconds = local->tm_sec;         // get seconds passed after minute (0-59)
-            
-    day = local->tm_mday;            // get day of month (1 to 31)
-    month = local->tm_mon + 1;       // get month of year (0 to 11)
-    year = local->tm_year + 1900;    // get year since 1900
-    sprintf(format_name,"%d-%02d-%02d_%02d:%02d:%02d", year, month, day, hours, minutes, seconds);
-}
