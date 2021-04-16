@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <wait.h>
 
-// #define DEBUG_ON
+#define DEBUG_ON
 
 // 9 Apr 2021 22:22:00 GMT+07
 #define BIRTHDAY_UNIX 1617981720
@@ -38,6 +38,7 @@ void __deleteFolder(char*);
 void zipGift();
 void getExtension(char*, char*, int);
 bool isNull(char*);
+void removeTempFolder();
 
 int main() {
   pid_t pid, sid;
@@ -187,6 +188,7 @@ void prepareGiftFolders() {
     #if defined DEBUG_ON
       printf("Preparing Stevany's favourite folders...\n");
     #endif
+    removeTempFolder();
     __prepareGiftFolder("Pyoto");
     __prepareGiftFolder("Musyik");
     __prepareGiftFolder("Fylm");
@@ -285,7 +287,6 @@ void filteredCopyFiles(char *source_folder, char *dest_folder, char* ext) {
       if (dp->d_type == DT_REG) {
         char dp_ext[16];
         getExtension(dp->d_name, dp_ext, 16);
-        printf("%s has extension %s.\n", dp->d_name, dp_ext);
         if (!isNull(dp_ext) && strcmp(dp_ext, ext) == 0) {
           sprintf(path, "%s/%s", source_folder, dp->d_name);
 
@@ -390,4 +391,22 @@ void getExtension(char *source, char *dest, int dest_size) {
 bool isNull(char *s) {
   if (s[0] == '\0') return true;
   return false;
+}
+
+void removeTempFolder() {
+  pid_t child_id;
+
+  child_id = fork();
+
+  if (child_id < 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  if (child_id == 0) {
+    #if defined DEBUG_ON
+      printf("Removing temp.zip...\n");
+    #endif
+    char *argv[] = {"rm", "temp.zip", NULL};
+    execv("/bin/rm", argv);
+  }
 }
