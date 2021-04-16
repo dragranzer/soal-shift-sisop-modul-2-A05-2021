@@ -145,7 +145,12 @@ void removeLine() {
                 fprintf(fp2, "%s", str);
             }
             else {
+                int len = strlen(str);
+                str[len-1] = '\0';
+
                 strcpy(removed, str);
+                // printf("folder: %s", removed);
+                // printf("size: %d\n\n", strlen(removed));
             }
         }
     }
@@ -167,6 +172,9 @@ void processFileName(char *str) {
     int i = 0;
     int j = 0;
     int k = 0;
+
+    // dest[k] = '/';
+    // k++;
 
     while (str[i] != ';') {
         dest[k] = str[i];
@@ -204,6 +212,40 @@ void processFileName(char *str) {
     fprintf(ket, "nama : %s\n", petName);
     fprintf(ket, "umur : %s\n\n", petAge);
     fclose(ket);
+
+// check pet kedua
+    if (str[i] == '_') {
+        i++;
+        int _j = 0, _k = 0;
+
+        while (str[i] != ';') {
+            i++;
+        }
+        i++;
+
+        char secondPetName[10];
+        char secondPetAge[5];
+
+        while (str[i] != ';') {
+            secondPetName[_j] = str[i];
+            _j++;
+            i++;
+        }
+        secondPetName[_j] = '\0';
+        i++;
+        while (str[i] != '.') {
+            secondPetAge[_k] = str[i];
+            _k++;
+            i++;
+        }
+        secondPetAge[_k] = '\0';
+
+        FILE *ket;
+        ket = fopen("keterangan.txt", "a");
+        fprintf(ket, "nama : %s\n", secondPetName);
+        fprintf(ket, "umur : %s\n\n", secondPetAge);
+        fclose(ket);
+    }
 }
 
 void deleteFiles();
@@ -251,6 +293,10 @@ int main() {
             organizeFiles();
         }
         else {
+            // char *argv[] = {"rm", "-rf", DEL_DIR_1, DEL_DIR_2, DEL_DIR_3, NULL};
+            
+            // char *argv[] = {"pwd", NULL};
+            // execv("/bin/pwd", argv);
             break;
         }
     }
@@ -270,9 +316,11 @@ void organizeFiles() {
     }
     else {
         while(wait(&status) > 0);
-
-        char *argv[] = {"echo", "setres", NULL};
-        execv("/bin/echo", argv);
+        char *argv[] = {"rm", "-f", "/home/krisna/modul2/petshop/jenis.txt", NULL};
+        execv("/bin/rm", argv);
+        // char *argv[] = {"echo", "setres", NULL};
+        // execv("/bin/echo", argv);
+        // exit(EXIT_SUCCESS);
     }
 }
 
@@ -339,7 +387,11 @@ void __moveFilesHelper(char *fileName, char *folderDest, char *pet) {
     int status;
 
     if (child == 0) {
-        // printf("file: %s. dest: %s. pet name: %s.\n", fileName, folderDest, pet);
+        // char trueDest[MAX];
+        // strcpy(trueDest, PATH);
+        // strcat(trueDest, folderDest);
+
+        // printf("file: %s. dest: %s. pet name: %s.\n", fileName, trueDest, pet);
 
         // char *argv[] = {"mv", fileName, pet, NULL};
         // execv("/bin/mv", argv);
@@ -347,12 +399,17 @@ void __moveFilesHelper(char *fileName, char *folderDest, char *pet) {
     else {
         while(wait(&status) > 0);
 
-        char *argv[] = {"mv", fileName, pet, NULL};
+        char trueDest[MAX];
+        strcpy(trueDest, PATH);
+        strcat(trueDest, folderDest);
+
+
+        char *argv[] = {"mv", "-f", fileName, folderDest, NULL};
         execv("/bin/mv", argv);
 
         // char *argv[] = {"pwd", NULL};
         // execv("/bin/pwd", argv);
-        // exit(EXIT_SUCCESS);
+        exit(EXIT_SUCCESS);
     }
 }
 
