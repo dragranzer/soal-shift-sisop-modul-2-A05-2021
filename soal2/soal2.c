@@ -26,6 +26,12 @@ char dest[20];
 char petName[10];
 char petAge[5];
 
+bool need_dup = false;
+
+char secondPetType[10];
+char secondPetName[10];
+char secondPetAge[5];
+
 FILE *fp;
 
 typedef struct bstnode_t {
@@ -173,9 +179,6 @@ void processFileName(char *str) {
     int j = 0;
     int k = 0;
 
-    // dest[k] = '/';
-    // k++;
-
     while (str[i] != ';') {
         dest[k] = str[i];
         i++;
@@ -215,16 +218,19 @@ void processFileName(char *str) {
 
 // check pet kedua
     if (str[i] == '_') {
+        need_dup = true;
+
         i++;
-        int _j = 0, _k = 0;
+        int _j = 0, _k = 0, _l = 0;
 
         while (str[i] != ';') {
+            secondPetType[_l] = str[i];
             i++;
+            _l++;
         }
         i++;
 
-        char secondPetName[10];
-        char secondPetAge[5];
+        secondPetType[_l] = '\0';
 
         while (str[i] != ';') {
             secondPetName[_j] = str[i];
@@ -259,6 +265,7 @@ void __makeSomeFolders();
 void __makeSomeFoldersHelper();
 void __moveFiles(char *fileName);
 void __moveFilesHelper(char *fileName, char *folderDest, char *name);
+void __createDuplicate(char *fileName);
 
 int main() {
     pid_t pid, sid;
@@ -335,7 +342,6 @@ void moveFiles() {
 
         DIR *d;
         struct dirent *dir;
-        // d = opendir("/home/krisna/modul2/petshop/.");
         d = opendir(".");
 
         if (d) {
@@ -347,9 +353,7 @@ void moveFiles() {
             }
             closedir(d);
         }
-
-        char *argv[] = {"echo", "", NULL};
-        execv("/bin/echo", argv);
+        exit(EXIT_SUCCESS);
     }
 }
 
@@ -363,6 +367,12 @@ void __moveFiles(char *fileName) {
     if (child == 0) {
         processFileName(fileName);
 
+        if (need_dup) {
+            // printf("dupe it: %s\n", fileName);
+            // printf("name: %s. age: %s. type: %s.\n", secondPetName, secondPetType, secondPetAge);
+            need_dup = false;
+            __createDuplicate(fileName);
+        }
         __moveFilesHelper(fileName, dest, petName);
     }
     else {
@@ -384,13 +394,34 @@ void __moveFilesHelper(char *fileName, char *folderDest, char *pet) {
     else {
         while(wait(&status) > 0);
 
-        char trueDest[MAX];
-        strcpy(trueDest, PATH);
-        strcat(trueDest, folderDest);
-
+        strcat(folderDest, ".jpg");
 
         char *argv[] = {"mv", "-f", fileName, folderDest, NULL};
         execv("/bin/mv", argv);
+    }
+}
+
+void __createDuplicate(char *fileName) {
+    char d_dest[MAX];
+    strcpy(d_dest, secondPetType);
+    strcat(d_dest, "/");
+    strcat(d_dest, secondPetAge);
+    strcat(d_dest, ".jpg");
+
+    pid_t child;
+    child = fork();
+    CHECK_FORK_SUCCESS(child)
+
+    int status;
+
+    if (child == 0) {
+
+    }
+    else {
+        while(wait(&status) > 0);
+
+        char *argv[] = {"cp", fileName, d_dest, NULL};
+        execv("/bin/cp", argv);
 
         exit(EXIT_SUCCESS);
     }
