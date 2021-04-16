@@ -28,7 +28,7 @@ int min(int a, int b) { return (a > b ? a : b); };
 void phrase_3d();
 
 char format_name[50],temp[50];
-int main(char *argv[]) {
+int main(int argc, char** argv) {
     pid_t pid, sid;        // Variabel untuk menyimpan PID
 
     pid = fork();     // Menyimpan PID dari Child Process
@@ -51,7 +51,7 @@ int main(char *argv[]) {
     if (sid < 0) {
       exit(EXIT_FAILURE);
     }
-    phrase_3d();
+    if(strcmp(argv[1],"-z")==0)phrase_3d();
     while (1) {
       phrase_3a();
       sleep(5);
