@@ -36,6 +36,8 @@ void filteredCopyFiles(char*, char*, char*);
 void deleteUnusedFiles();
 void __deleteFolder(char*);
 void zipGift();
+void getExtension(char*, char*, int);
+bool isNull(char*);
 
 int main() {
   pid_t pid, sid;
@@ -279,24 +281,32 @@ void filteredCopyFiles(char *source_folder, char *dest_folder, char* ext) {
 
   while((dp = readdir(dir)) != NULL) {
     if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0) {
-      sprintf(path, "%s/%s", source_folder, dp->d_name);
+      // If it is a file
+      if (dp->d_type == DT_REG) {
+        char dp_ext[16];
+        getExtension(dp->d_name, dp_ext, 16);
+        printf("%s has extension %s.\n", dp->d_name, dp_ext);
+        if (!isNull(dp_ext) && strcmp(dp_ext, ext) == 0) {
+          sprintf(path, "%s/%s", source_folder, dp->d_name);
 
-      pid_t child;
+          pid_t child;
 
-      child = fork();
+          child = fork();
 
-      if (child < 0) {
-        exit(EXIT_FAILURE);
-      }
+          if (child < 0) {
+            exit(EXIT_FAILURE);
+          }
 
-      int status;
+          int status;
 
-      if (child == 0) {
-        char *argv[] = {"cp", path, dest_folder, NULL};
-        execv("/bin/cp", argv);
-      }
-      else {
-        while(wait(&status) > 0);
+          if (child == 0) {
+            char *argv[] = {"cp", path, dest_folder, NULL};
+            execv("/bin/cp", argv);
+          }
+          else {
+            while(wait(&status) > 0);
+          }
+        }
       }
     }
   }
@@ -353,4 +363,31 @@ void zipGift() {
   #endif
   char *argv[] = {"zip", "-qrm", "Lopyu_Stevany.zip", "Musyik", "Pyoto", "Fylm", NULL};
   execv("/usr/bin/zip", argv);
+}
+
+void getExtension(char *source, char *dest, int dest_size) {
+  // Caution: Make sure the string is valid, otherwise there would be endless loop
+  // A string is valid if it has null (\0) characters at the end
+  int index = 0;
+  bool start_recording = false;
+  for (int i = 0; source[i] != '\0'; i++) {
+    if (source[i] == '.') {
+      start_recording = true;
+    }
+    else {
+      if (start_recording) {
+        dest[index++] = source[i];
+      }
+    }
+  }
+  dest[index] = '\0';
+  // Validator
+  if (dest_size < index) {
+    printf("Warning: dest overflow.");
+  }
+}
+
+bool isNull(char *s) {
+  if (s[0] == '\0') return true;
+  return false;
 }
