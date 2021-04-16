@@ -22,6 +22,7 @@
 char jenis[15][10];
 int i = 0;
 
+char dest[20];
 char petName[10];
 
 FILE *fp;
@@ -162,20 +163,57 @@ void cutAtChar(char *str, char c) {
 }
 
 void processFileName(char *str) {
+    // int i = 0;
+    // int k = 0;
+
+    // dest[k] = '/';
+    // k++;
+
+    // while (str[i] != ';') {
+    //     dest[k] = str[i];
+    //     i++;
+    //     k++;
+    // }
+
+    // dest[k] = '/';
+    // k++;
+
+    // int j = 0;
+    // i++;
+
+    // while(str[i] != ';') {
+    //     petName[j] = str[i];
+    //     dest[k] = str[i];
+    //     j++;
+    //     i++;
+    //     k++;
+    // }
+
+    // dest[k] = '\0';
+    // petName[j] = '\0';
+
     int i = 0;
-    while (str[i] != ';') {
-        i++;
-    }
     int j = 0;
-    char name[10];
+    int k = 0;
+
+    while (str[i] != ';') {
+        dest[k] = str[i];
+        i++;
+        k++;
+    }
+    dest[k] = '/';
+    k++;
     i++;
 
     while(str[i] != ';') {
         petName[j] = str[i];
+        dest[k] = str[i];
         j++;
         i++;
+        k++;
     }
 
+    dest[k] = '\0';
     petName[j] = '\0';
 }
 
@@ -189,6 +227,7 @@ void moveFiles();
 void __makeSomeFolders();
 void __makeSomeFoldersHelper();
 void __moveFiles(char *fileName);
+void __moveFilesHelper(char *fileName, char *folderDest, char *name);
 
 int main() {
     pid_t pid, sid;
@@ -261,14 +300,18 @@ void moveFiles() {
     else {
         while(wait(&status) > 0);
 
+        if (chdir("home/krisna/modul2/petshop/") < 0) exit(EXIT_FAILURE);
+
+
         DIR *d;
         struct dirent *dir;
-        d = opendir("/home/krisna/modul2/petshop/.");
+        // d = opendir("/home/krisna/modul2/petshop/.");
+        d = opendir(".");
+
         if (d) {
             while ((dir = readdir(d)) != NULL) {
                 char *ret = strstr(dir->d_name, ".jpg");
                 if (ret) {
-                    // printf("%s\n", dir->d_name);
                     __moveFiles(dir->d_name);
                 }
             }
@@ -281,9 +324,47 @@ void moveFiles() {
 }
 
 void __moveFiles(char *fileName) {
-    // printf("in func: %s\n", fileName);
-    processFileName(fileName);
-    printf("hasil: %s\n", petName);
+    pid_t child;
+    child = fork();
+    CHECK_FORK_SUCCESS(child)
+
+    int status;
+
+    if (child == 0) {
+        processFileName(fileName);
+
+        __moveFilesHelper(fileName, dest, petName);
+    }
+    else {
+        while(wait(&status) > 0);
+
+        exit(EXIT_SUCCESS);
+    }
+}
+
+void __moveFilesHelper(char *fileName, char *folderDest, char *pet) {
+    pid_t child;
+    child = fork();
+    CHECK_FORK_SUCCESS(child)
+
+    int status;
+
+    if (child == 0) {
+        // printf("file: %s. dest: %s. pet name: %s.\n", fileName, folderDest, pet);
+
+        // char *argv[] = {"mv", fileName, pet, NULL};
+        // execv("/bin/mv", argv);
+    }
+    else {
+        while(wait(&status) > 0);
+
+        char *argv[] = {"mv", fileName, pet, NULL};
+        execv("/bin/mv", argv);
+
+        // char *argv[] = {"pwd", NULL};
+        // execv("/bin/pwd", argv);
+        // exit(EXIT_SUCCESS);
+    }
 }
 
 void checkFiles() {
