@@ -24,6 +24,7 @@ int i = 0;
 
 char dest[20];
 char petName[10];
+char petAge[5];
 
 FILE *fp;
 
@@ -163,35 +164,6 @@ void cutAtChar(char *str, char c) {
 }
 
 void processFileName(char *str) {
-    // int i = 0;
-    // int k = 0;
-
-    // dest[k] = '/';
-    // k++;
-
-    // while (str[i] != ';') {
-    //     dest[k] = str[i];
-    //     i++;
-    //     k++;
-    // }
-
-    // dest[k] = '/';
-    // k++;
-
-    // int j = 0;
-    // i++;
-
-    // while(str[i] != ';') {
-    //     petName[j] = str[i];
-    //     dest[k] = str[i];
-    //     j++;
-    //     i++;
-    //     k++;
-    // }
-
-    // dest[k] = '\0';
-    // petName[j] = '\0';
-
     int i = 0;
     int j = 0;
     int k = 0;
@@ -215,6 +187,23 @@ void processFileName(char *str) {
 
     dest[k] = '\0';
     petName[j] = '\0';
+
+    i++;
+
+    int l = 0;
+    while(str[i] != '\0' && str[i] != '_' && str[i] != '.') {
+        petAge[l] = str[i];
+        i++;
+        l++;
+    }
+
+    petAge[l] = '\0';
+
+    FILE *ket;
+    ket = fopen("keterangan.txt", "a");
+    fprintf(ket, "nama : %s\n", petName);
+    fprintf(ket, "umur : %s\n\n", petAge);
+    fclose(ket);
 }
 
 void deleteFiles();
