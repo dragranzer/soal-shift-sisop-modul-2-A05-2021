@@ -19,17 +19,20 @@
 void ConstructTimeNow(char*);
 void ConstructDownloadLink(char* ,char*, char*);
 void encrypt(char* , char*, int);
-void phrase_3a();
+void phrase_3a(char*);
 void __makeFolder(char *);
 void phrase_3b();
 void downloadImage(char*);
 void phrase_3c(char*);
 int min(int a, int b) { return (a > b ? a : b); };
-void phrase_3d();
+void __killNow();
+void __makestatus(char*);
+void __zipping(char*);
+void __smoothKill(int);
 
 char format_name[50],temp[50];
 int main(int argc, char** argv) {
-    pid_t pid, sid;        // Variabel untuk menyimpan PID
+    pid_t pid, sid, p1, p2;        // Variabel untuk menyimpan PID
 
     pid = fork();     // Menyimpan PID dari Child Process
 
@@ -51,11 +54,26 @@ int main(int argc, char** argv) {
     if (sid < 0) {
       exit(EXIT_FAILURE);
     }
-    if(strcmp(argv[1],"-z")==0)phrase_3d();
+    int pidParrent = (int)getpid();
+    if(strcmp(argv[1],"-z")==0)__killNow();
+    else if(strcmp(argv[1],"-x")==0)__smoothKill(pidParrent);
     while (1) {
-      phrase_3a();
-      sleep(5);
+      char folder_name[50];
+      ConstructTimeNow(folder_name);
+      p1 = fork();
+      if(p1==0)phrase_3a(folder_name);
+      p2 = fork();
+      if(p2==0){
+        phrase_3b(folder_name);
+        phrase_3c(folder_name);
+      }
+      sleep(40);
     }
+}
+
+void __makeFolder(char *folder_name) {
+  char *argv[] = {"mkdir", "-p", folder_name, NULL};
+  execv("/bin/mkdir", argv);
 }
 
 void ConstructTimeNow(char *format_name){
@@ -72,69 +90,14 @@ void ConstructTimeNow(char *format_name){
     year = local->tm_year + 1900;    // get year since 1900
     sprintf(format_name,"%d-%02d-%02d_%02d:%02d:%02d", year, month, day, hours, minutes, seconds);
 }
-void ConstructDownloadLink(char *size ,char *link,char *name){
-    sprintf(size,"%d",(int)time(NULL)%1000+50); 
-    ConstructTimeNow(name);
-    sprintf(link,"https://picsum.photos/%s",size);
-}
-
-void encrypt(char *text, char *encrypted, int len)
-{
-  len = min(strlen(text), len);
-
-  // traverse text
-  for (int i = 0; i < len; i++)
-  {
-    // apply transformation to each character
-    // Encrypt Uppercase letters
-    if (isupper(text[i]))
-      encrypted[i] = ((text[i]+5-65)%26 +65); 
-    else
-      // Encrypt Lowercase letters
-      encrypted[i] = ((text[i]+5-97)%26 +97);
-  }
-  encrypted[len] = '\0';
-}
-
-void phrase_3a() {
-  pid_t child_id;
-  int flag=1;
-  char folder_name[50];
-
-  child_id = fork();
-
-  if (child_id < 0) {
-    exit(EXIT_FAILURE);
-  }
-
-  int status;
-
-  ConstructTimeNow(folder_name);
-
-  if (child_id == 0 && flag==1) {
-    while(true){
-        __makeFolder(folder_name);
-    }
-     
-  }
-  else {
-    while(wait(&status) > 0);
-    phrase_3b(folder_name);
-  }
-}
-
-void __makeFolder(char *folder_name) {
-  char *argv[] = {"mkdir", "-p", folder_name, NULL};
-  execv("/bin/mkdir", argv);
-}
 
 void phrase_3b(char *folder_name) {
-  for (int j = 0; j < 2; j++) {
+  for (int j = 0; j < 10; j++) {
     //printf("DEBUG: donwlot gambar ke %d\n", j);
     downloadImage(folder_name);
     sleep(5);
   }
-  phrase_3c(folder_name);
+  //phrase_3c(folder_name);
 }
 
 void downloadImage(char *folder_name) {
@@ -157,23 +120,21 @@ void downloadImage(char *folder_name) {
       char *argv[] = {"wget", "--no-check-certificate", "-q", download_link, "-O", path, NULL};
       execv("/usr/bin/wget", argv);
       
-  } else {
-    while(wait(&status) > 0);
   }
 }
 
+void ConstructDownloadLink(char *size ,char *link,char *name){
+    sprintf(size,"%d",(int)time(NULL)%1000+50); 
+    ConstructTimeNow(name);
+    sprintf(link,"https://picsum.photos/%s",size);
+}
+
 void phrase_3c(char *folder_name) {
-  pid_t child_id;
+    __makestatus(folder_name);
+    __zipping(folder_name);
+}
 
-  child_id = fork();
-
-  if (child_id < 0) {
-    exit(EXIT_FAILURE);
-  }
-
-  int status;
-
-  if (child_id == 0) {
+void __makestatus(char *folder_name){
     char dir[512];
     sprintf(dir, "%s/status.txt", folder_name);
     FILE *fptr = fopen(dir, "w");
@@ -190,19 +151,34 @@ void phrase_3c(char *folder_name) {
     fprintf(fptr, "%s", text_to_write);
 
     fclose(fptr);
+}
+
+void encrypt(char *text, char *encrypted, int len)
+{
+  len = min(strlen(text), len);
+
+  // traverse text
+  for (int i = 0; i < len; i++)
+  {
+    // apply transformation to each character
+    // Encrypt Uppercase letters
+    if (isupper(text[i]))
+      encrypted[i] = ((text[i]+5-65)%26 +65); 
+    else
+      // Encrypt Lowercase letters
+      encrypted[i] = ((text[i]+5-97)%26 +97);
+  }
+  encrypted[len] = '\0';
+}
+
+void __zipping(char *folder_name){
     char zippo[50];
     sprintf(zippo, "%s.zip", folder_name);
     char *argv[] = {"zip", "-qrm", zippo, folder_name, NULL};
     execv("/bin/zip", argv);
-  }
-  else {
-    while(wait(&status) > 0);
-    //printf("DEBUG: masuk zip\n");
-    
-  }
 }
 
-void phrase_3d(){
+void __killNow(){
   char dir[512];
   sprintf(dir, "Killer.sh");
   FILE *fptr = fopen(dir, "w");
@@ -213,4 +189,22 @@ void phrase_3d(){
   char text_to_write[50] = "#!/bin/bash\n\nkillall soal3\nrm Killer.sh";
   fprintf(fptr, "%s", text_to_write);
   fclose(fptr);
+}
+
+void __smoothKill(int pid){
+    char dir[512];
+    sprintf(dir, "Killer.sh");
+    FILE *fptr = fopen(dir, "w");
+    if (fptr == NULL) {
+    exit(EXIT_FAILURE);
+    }
+
+    char text_to_write[50];
+    sprintf(text_to_write, "#!/bin/bash\n\nkill %d\nrm Killer.sh",pid);
+    fprintf(fptr, "%s", text_to_write);
+    fclose(fptr);
+}
+
+void phrase_3a(char *folder_name){
+  __makeFolder(folder_name);
 }
