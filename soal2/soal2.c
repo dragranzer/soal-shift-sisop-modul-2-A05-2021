@@ -366,13 +366,6 @@ void __moveFiles(char *fileName) {
 
     if (child == 0) {
         processFileName(fileName);
-
-        if (need_dup) {
-            // printf("dupe it: %s\n", fileName);
-            // printf("name: %s. age: %s. type: %s.\n", secondPetName, secondPetType, secondPetAge);
-            need_dup = false;
-            __createDuplicate(fileName);
-        }
         __moveFilesHelper(fileName, dest, petName);
     }
     else {
@@ -389,7 +382,10 @@ void __moveFilesHelper(char *fileName, char *folderDest, char *pet) {
     int status;
 
     if (child == 0) {
-
+        if (need_dup) {
+            need_dup = false;
+            __createDuplicate(fileName);
+        }
     }
     else {
         while(wait(&status) > 0);
@@ -402,12 +398,6 @@ void __moveFilesHelper(char *fileName, char *folderDest, char *pet) {
 }
 
 void __createDuplicate(char *fileName) {
-    char d_dest[MAX];
-    strcpy(d_dest, secondPetType);
-    strcat(d_dest, "/");
-    strcat(d_dest, secondPetAge);
-    strcat(d_dest, ".jpg");
-
     pid_t child;
     child = fork();
     CHECK_FORK_SUCCESS(child)
@@ -420,10 +410,14 @@ void __createDuplicate(char *fileName) {
     else {
         while(wait(&status) > 0);
 
+        char d_dest[MAX];
+        strcpy(d_dest, secondPetType);
+        strcat(d_dest, "/");
+        strcat(d_dest, secondPetName);
+        strcat(d_dest, ".jpg");
+
         char *argv[] = {"cp", fileName, d_dest, NULL};
         execv("/bin/cp", argv);
-
-        exit(EXIT_SUCCESS);
     }
 }
 
