@@ -164,11 +164,13 @@ Proses debugging ketika program tidak berjalan sesuai dengan keinginan lumayan k
 
 #### G. Screenshot
 <div style="text-align:center;">
+  
 ![image](https://user-images.githubusercontent.com/8071604/115100379-654da500-9f66-11eb-8979-055e618e3b60.png)
 ![image](https://user-images.githubusercontent.com/8071604/115100385-77c7de80-9f66-11eb-94db-c588bf4190ef.png)
 ![image](https://user-images.githubusercontent.com/8071604/115100392-82827380-9f66-11eb-842f-2d22f8bdc522.png)
 ![image](https://user-images.githubusercontent.com/8071604/115100399-87472780-9f66-11eb-930e-6f2ff1a988e8.png)
 ![image](https://user-images.githubusercontent.com/8071604/115100402-8e6e3580-9f66-11eb-9811-00bbc883c9bd.png)
+
 </div>
 ## Soal 2
 
