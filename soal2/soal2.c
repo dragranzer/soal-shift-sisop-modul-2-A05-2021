@@ -25,6 +25,7 @@ int i = 0;
 char dest[20];
 char petName[10];
 char petAge[5];
+char petType[10];
 
 bool need_dup = false;
 
@@ -181,9 +182,13 @@ void processFileName(char *str) {
 
     while (str[i] != ';') {
         dest[k] = str[i];
+        petType[k] = str[i];
         i++;
         k++;
     }
+
+    petType[k] = '/';
+    petType[k+1] = '\0';
     dest[k] = '/';
     k++;
     i++;
@@ -208,10 +213,16 @@ void processFileName(char *str) {
         l++;
     }
 
+    char destKet[40];
+    strcpy(destKet, petType);
+    strcat(destKet, "keterangan.txt");
+
+    // printf("ket dest: %s\n", destKet);
+
     petAge[l] = '\0';
 
     FILE *ket;
-    ket = fopen("keterangan.txt", "a");
+    ket = fopen(destKet, "a");
     fprintf(ket, "nama : %s\n", petName);
     fprintf(ket, "umur : %s\n\n", petAge);
     fclose(ket);
@@ -246,8 +257,13 @@ void processFileName(char *str) {
         }
         secondPetAge[_k] = '\0';
 
+        char secondKetDest[40];
+        strcpy(secondKetDest, secondPetType);
+        strcat(secondKetDest, "/");
+        strcat(secondKetDest, "keterangan.txt");
+
         FILE *ket;
-        ket = fopen("keterangan.txt", "a");
+        ket = fopen(secondKetDest, "a");
         fprintf(ket, "nama : %s\n", secondPetName);
         fprintf(ket, "umur : %s\n\n", secondPetAge);
         fclose(ket);
