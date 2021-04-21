@@ -186,5 +186,8 @@ Proses debugging ketika program tidak berjalan sesuai dengan keinginan lumayan k
       char *argv[] = {"unzip", "-d", PATH, "/home/krisna/Documents/Code/Modul 2/SoalShift2/pets.zip", NULL};
       execv("/bin/unzip", argv);
     </pre>
+  setelah itu, penghapusan file/folder tidak penting dapat dilakukan dengan membuat fungsi `deleteFiles()` dimana terdapat `fork()` juga yang memanggil `rm` melalui `execv()` 
+* ### 2b
+  >buatlah folder untuk mengkategorikan jenis
 
 ## Soal 3
