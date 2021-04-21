@@ -370,12 +370,16 @@ Proses debugging ketika program tidak berjalan sesuai dengan keinginan lumayan k
 
 * ### hasil run program `soal2.c`
   * direktori `/home/[user]/modul2/petshop` 
+  
   ![image](https://user-images.githubusercontent.com/43901559/115546124-d971ab00-a2ce-11eb-834c-e39bac5fb44a.png)
   * tampilan salah satu kategori pets - **dog**
+  
   ![image](https://user-images.githubusercontent.com/43901559/115546313-1178ee00-a2cf-11eb-829a-cbc7f41f925c.png)
   * tampilan di folder **cat**. perhatikan bahwa terdapat file yang sama seperti di folder **dog**, hanya nama filenya adalah pets kategori **cat**
+  
   ![image](https://user-images.githubusercontent.com/43901559/115546366-25245480-a2cf-11eb-98fb-e31fe95b66cd.png)
   * tampilan file `keterangan.txt` pada folder **chicken**
+  
   ![image](https://user-images.githubusercontent.com/43901559/115546535-5a30a700-a2cf-11eb-8532-fbf3920cd66c.png)
 
 ## Soal 3
