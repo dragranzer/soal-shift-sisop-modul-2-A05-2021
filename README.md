@@ -171,6 +171,50 @@ Proses debugging ketika program tidak berjalan sesuai dengan keinginan lumayan k
 ![image](https://user-images.githubusercontent.com/8071604/115100402-8e6e3580-9f66-11eb-9811-00bbc883c9bd.png)
 
 ## Soal 2
+* ### setup program `soal2.c`
+  * menggunakan Daemon
+  * membuat beberapa macro definition `#define Directive` untuk memudahkan
+  ```c
+  int main() {
+    pid_t pid, sid;
+
+    pid = fork();
+
+    // Child spawn failed
+    CHECK_FORK_SUCCESS(pid)
+
+    // Terminate parent process
+    if (pid > 0) {
+        exit(EXIT_SUCCESS);
+    }
+
+    umask(0);
+
+    // Reserve SID, prevent orphan process
+    sid = setsid();
+    if (sid < 0) {
+        exit(EXIT_FAILURE);
+    }
+
+    CHANGE_TO_ROOT
+
+    while (1) {
+        pid_t c;
+        c = fork();
+
+        int status;
+
+        if (c == 0) {
+            organizeFiles();
+        }
+        else {
+            break;
+        }
+    }
+
+    return 0;
+  }
+  ```
 * ### 2a
   >extract `pets.zip` ke `/home/[user]/modul2/petshop` dan hapus file/folder yang bukan gambar pets
   Proses pengerjaan soal 2 bagian a ini dapat secara garis besar adalah sebagai berikut
@@ -213,6 +257,23 @@ Proses debugging ketika program tidak berjalan sesuai dengan keinginan lumayan k
   * menyimpan jenis pets
   * memastikan tidak ada jenis pets yang duplikat
   Terakhir, gunakan `fork()` dan `execv()` untuk membuat folder jenis pets berdasarkan data yang ada. `execv()` akan memanggil `/bin/mkdir/`
-  
+* ### 2c
+  >pindahkan file foto pets ke folder berdasarkan kategorinya
+  * cari file .jpg yang perlu dipindahkan
+  ```c
+    DIR *d;
+    struct dirent *dir;
+    d = opendir(".");
+
+    if (d) {
+      while ((dir = readdir(d)) != NULL) {
+        char *ret = strstr(dir->d_name, ".jpg");
+          if (ret) {
+            __moveFiles(dir->d_name);
+          }
+        }
+      closedir(d);
+    }
+  ```
 
 ## Soal 3
