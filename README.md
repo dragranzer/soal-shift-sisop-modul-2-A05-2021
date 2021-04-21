@@ -188,6 +188,31 @@ Proses debugging ketika program tidak berjalan sesuai dengan keinginan lumayan k
     </pre>
   setelah itu, penghapusan file/folder tidak penting dapat dilakukan dengan membuat fungsi `deleteFiles()` dimana terdapat `fork()` juga yang memanggil `rm` melalui `execv()` 
 * ### 2b
-  >buatlah folder untuk mengkategorikan jenis
+  >buatlah folder-folder berdasakan jenis tiap pets
+  Pertama-tama, tiap filename dari tiap gambar harus di proses untuk mendapatkan apa saja jenis pets yang ada
+  * bacalah nama file yang ada pada direktori
+  <pre>
+    DIR *d;
+    struct dirent *dir;
+    d = opendir("/home/krisna/modul2/petshop/.");
+  </pre>
+  * copy tiap char
+  * berhenti ketika bertemu `;`
+  * simpan sebagai string yang berisi jenis pets
+  <pre>
+    void cutAtChar(char *str, char c) {
+      if (!str) return;
+
+      while (*str != '0' && *str != c) str++;
+
+      *str = '\0';
+      return;
+    }
+  </pre>
+  Kemudian, tiap string hasil `string processing` sebelumnya disimpan ke dalam `Unique Binary Search Tree`. Hal ini berguna untuk
+  * menyimpan jenis pets
+  * memastikan tidak ada jenis pets yang duplikat
+  Terakhir, gunakan `fork()` dan `execv()` untuk membuat folder jenis pets berdasarkan data yang ada. `execv()` akan memanggil `/bin/mkdir/`
+  
 
 ## Soal 3
