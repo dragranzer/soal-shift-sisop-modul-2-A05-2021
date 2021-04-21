@@ -171,5 +171,7 @@ Proses debugging ketika program tidak berjalan sesuai dengan keinginan lumayan k
 ![image](https://user-images.githubusercontent.com/8071604/115100402-8e6e3580-9f66-11eb-9811-00bbc883c9bd.png)
 
 ## Soal 2
+* ### 2a
+  >extract `pets.zip` ke `/home/[user]/modul2/petshop` dan hapus file/folder yang bukan gambar pets
 
 ## Soal 3
