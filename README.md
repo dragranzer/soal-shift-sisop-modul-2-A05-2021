@@ -295,6 +295,76 @@ Proses debugging ketika program tidak berjalan sesuai dengan keinginan lumayan k
     }
   }
   ```
-  
+  * melalui `__moveFiles`, akan dipanggil fungsi `__moveFilesHelper` yang akan memindahkan file. Fungsi ini menerima nama file yang akan dipindahkan dan tujuan pemindahan. Fungsi ini juga akan memanggil `__createDuplicate` yang akan digunakan untuk menyelesaikan soal **2d**
+  ```c
+  void __moveFilesHelper(char *fileName, char *folderDest, char *pet) {
+    pid_t child;
+    child = fork();
+    CHECK_FORK_SUCCESS(child)
+
+    int status;
+
+    if (child == 0) {
+        if (need_dup) {
+            need_dup = false;
+            __createDuplicate(fileName);
+        }
+    }
+    else {
+        while(wait(&status) > 0);
+
+        strcat(folderDest, ".jpg");
+
+        char *argv[] = {"mv", "-f", fileName, folderDest, NULL};
+        execv("/bin/mv", argv);
+    }
+  }
+  ```
+* ### soal 2d
+  >jika terdapat dua pets dalam satu foto, duplikasikan file tersebut dan kategorikan filenya sesuai jenis pets
+  Seperti yang disebutkan sebelumnya, soal ini menggunakan fungsi `__createDuplicate`.
+  * Perbedaan utama dengan pengerjaan **2c** adalah penggunaan `cp` untuk men-copy file dan bukan `mv`.
+  * Fungsi ini dieksekusi sebelum `__moveFilesHelper` selesai memindahkan file.
+  * string `secondPetType` dan `secondPetName` dihasilkan dari fungsi `processFileName`.
+  * Terdapat variabel boolean `need_dup` yang akan di set sebagai `true` apabila `processFileName` menemukan adanya `_` pada nama file yang sesuai deskripsi soal mengindikasikan ada dua pets pada satu file foto.
+  ```c
+  void __createDuplicate(char *fileName) {
+    pid_t child;
+    child = fork();
+    CHECK_FORK_SUCCESS(child)
+
+    int status;
+
+    if (child == 0) {
+
+    }
+    else {
+        while(wait(&status) > 0);
+
+        char d_dest[MAX];
+        strcpy(d_dest, secondPetType);
+        strcat(d_dest, "/");
+        strcat(d_dest, secondPetName);
+        strcat(d_dest, ".jpg");
+
+        char *argv[] = {"cp", fileName, d_dest, NULL};
+        execv("/bin/cp", argv);
+    }
+  }
+  ```
+* ### soal 2e
+  >pada tiap folder kategori pets, buatlah `keterangan.txt` yang berisi nama dan umur pets sesuai format yang diberikan
+  Pembuatan file `keterangan.txt` terjadi pada fungsi `processFileName`
+  ```c
+    FILE *ket;
+    ket = fopen(destKet, "a");
+    fprintf(ket, "nama : %s\n", petName);
+    fprintf(ket, "umur : %s\n\n", petAge);
+    fclose(ket);
+  ```
+  * menggunakan fungsi `fopen` dengan mode `a` untuk menandakan append
+  * variable string `destKet` merupakan hasil `strcat` jenis pet dengan "keterangan.txt"
+  * varaible string `petName` dan `petAge` diperoleh dari string processing
+  * untuk file dengan dua pets, proses serupa, hanya saja tipe, nama, dan umur pets dibaca mulai dari '_'
 
 ## Soal 3
