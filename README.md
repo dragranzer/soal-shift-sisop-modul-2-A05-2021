@@ -173,5 +173,18 @@ Proses debugging ketika program tidak berjalan sesuai dengan keinginan lumayan k
 ## Soal 2
 * ### 2a
   >extract `pets.zip` ke `/home/[user]/modul2/petshop` dan hapus file/folder yang bukan gambar pets
+  Proses pengerjaan soal 2 bagian a ini dapat secara garis besar adalah sebagai berikut
+  * buatlah sebuah fungsi `extractFiles()` yang menggunakan `fork()` untuk membuat proses lain
+  * proses `child`-nya digunakan untuk membuat folder baru di `/home/[user]/modul2/petshop` dengan `execv`. Jelasnya sebagai berikut
+    <pre>
+      char *argv[] = {"mkdir", "-p", PATH, NULL};
+      execv("/bin/mkdir", argv);
+    </pre>
+  * proses `parent`-nya melalukan wait hingga folder sudah dibuat, kemudian melakukan extraction file `pets.zip` ke folder yang baru dibuat
+    <pre>
+      while(wait(&status) > 0);
+      char *argv[] = {"unzip", "-d", PATH, "/home/krisna/Documents/Code/Modul 2/SoalShift2/pets.zip", NULL};
+      execv("/bin/unzip", argv);
+    </pre>
 
 ## Soal 3
