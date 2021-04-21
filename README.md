@@ -220,30 +220,30 @@ Proses debugging ketika program tidak berjalan sesuai dengan keinginan lumayan k
   Proses pengerjaan soal 2 bagian a ini dapat secara garis besar adalah sebagai berikut
   * buatlah sebuah fungsi `extractFiles()` yang menggunakan `fork()` untuk membuat proses lain
   * proses `child`-nya digunakan untuk membuat folder baru di `/home/[user]/modul2/petshop` dengan `execv`. Jelasnya sebagai berikut
-    <pre>
+    ```c
       char *argv[] = {"mkdir", "-p", PATH, NULL};
       execv("/bin/mkdir", argv);
-    </pre>
+    ```
   * proses `parent`-nya melalukan wait hingga folder sudah dibuat, kemudian melakukan extraction file `pets.zip` ke folder yang baru dibuat
-    <pre>
+    ```c
       while(wait(&status) > 0);
       char *argv[] = {"unzip", "-d", PATH, "/home/krisna/Documents/Code/Modul 2/SoalShift2/pets.zip", NULL};
       execv("/bin/unzip", argv);
-    </pre>
+    ```
   setelah itu, penghapusan file/folder tidak penting dapat dilakukan dengan membuat fungsi `deleteFiles()` dimana terdapat `fork()` juga yang memanggil `rm` melalui `execv()` 
 * ### 2b
   >buatlah folder-folder berdasakan jenis tiap pets
   Pertama-tama, tiap filename dari tiap gambar harus di proses untuk mendapatkan apa saja jenis pets yang ada
   * bacalah nama file yang ada pada direktori
-  <pre>
+  ```c
     DIR *d;
     struct dirent *dir;
     d = opendir("/home/krisna/modul2/petshop/.");
-  </pre>
+  ```
   * copy tiap char
   * berhenti ketika bertemu `;`
   * simpan sebagai string yang berisi jenis pets
-  <pre>
+  ```c
     void cutAtChar(char *str, char c) {
       if (!str) return;
 
@@ -252,7 +252,7 @@ Proses debugging ketika program tidak berjalan sesuai dengan keinginan lumayan k
       *str = '\0';
       return;
     }
-  </pre>
+  ```
   Kemudian, tiap string hasil `string processing` sebelumnya disimpan ke dalam `Unique Binary Search Tree`. Hal ini berguna untuk
   * menyimpan jenis pets
   * memastikan tidak ada jenis pets yang duplikat
@@ -275,5 +275,26 @@ Proses debugging ketika program tidak berjalan sesuai dengan keinginan lumayan k
       closedir(d);
     }
   ```
+  * buat fungsi `__moveFiles(char *fileName)` untuk membantu memindahan file. Fungsi tersebut akan memanggil fungsi `processFileName(char *fileName)` yang akan memproses nama file sehingga dapat ditentukan akan kemana foto pets tersebut akan dipindahkan. Fungsi tersebut juga akan bermanfaat untuk mengerjakan soal **2e**.
+  ```c
+  void __moveFiles(char *fileName) {
+    pid_t child;
+    child = fork();
+    CHECK_FORK_SUCCESS(child)
+
+    int status;
+
+    if (child == 0) {
+        processFileName(fileName);
+        __moveFilesHelper(fileName, dest, petName);
+    }
+    else {
+        while(wait(&status) > 0);
+
+        exit(EXIT_SUCCESS);
+    }
+  }
+  ```
+  
 
 ## Soal 3
