@@ -419,6 +419,7 @@ while (1) {
   }
   ```
   2. Setelah mendapatkan nama directory, kami membuat child proses yang digunakan untuk membuat directory dengan fungsi `__makeFolder` yang terdapat pada fungsi `phrase_3a`:
+ 
     a. `phrase_3a` :
     ```c
     void phrase_3a(char *folder_name){
