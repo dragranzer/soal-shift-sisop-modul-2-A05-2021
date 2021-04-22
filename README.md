@@ -401,99 +401,95 @@ while (1) {
 ```
 * ### 3a
   Soal 3a diminta untuk membuat directory setiap 40 detik dengan format nama directory esuai timestamp [YYYY-mm-dd_HH:ii:ss].
-  1. Pada langkah pertama kami membuat fungsi `ConstructTimeNow` yang digunakan untuk mendapatkan format waktu saat ini kemudian disimpan pada variable `folder_name`. Berikut isi dari fungsi `ConstructTimeNow`:
-    ```c
-    void ConstructTimeNow(char *format_name){
-        int hours, minutes, seconds, day, month, year;
-        time_t now;
-        time(&now);
-        struct tm *local = localtime(&now);
-        hours = local->tm_hour;          // get hours since midnight (0-23)
-        minutes = local->tm_min;         // get minutes passed after the hour (0-59)
-        seconds = local->tm_sec;         // get seconds passed after minute (0-59)
+    1. Pada langkah pertama kami membuat fungsi `ConstructTimeNow` yang digunakan untuk mendapatkan format waktu saat ini kemudian disimpan pada variable `folder_name`. Berikut isi dari fungsi `ConstructTimeNow`:
+        ```c
+        void ConstructTimeNow(char *format_name){
+            int hours, minutes, seconds, day, month, year;
+            time_t now;
+            time(&now);
+            struct tm *local = localtime(&now);
+            hours = local->tm_hour;          // get hours since midnight (0-23)
+            minutes = local->tm_min;         // get minutes passed after the hour (0-59)
+            seconds = local->tm_sec;         // get seconds passed after minute (0-59)
 
-        day = local->tm_mday;            // get day of month (1 to 31)
-        month = local->tm_mon + 1;       // get month of year (0 to 11)
-        year = local->tm_year + 1900;    // get year since 1900
-        sprintf(format_name,"%d-%02d-%02d_%02d:%02d:%02d", year, month, day, hours, minutes, seconds);
-    }
-    ```
-  2. Setelah mendapatkan nama directory, kami membuat child proses yang digunakan untuk membuat directory dengan fungsi `__makeFolder` yang terdapat pada fungsi `phrase_3a`:
- 
-    a. `phrase_3a` :
-    ```c
-    void phrase_3a(char *folder_name){
-      __makeFolder(folder_name);
-    }
-    ```
-    b. `__makeFolder`:
-    ```c
-    void __makeFolder(char *folder_name) {
-      char *argv[] = {"mkdir", "-p", folder_name, NULL};
-      execv("/bin/mkdir", argv);
-    }
-    ```
-  3. Kemudian pada akhir while(1) kami sisipkan `sleep(40)` supaya program menunggu 40 detik untuk membuat directory yang baru.
+            day = local->tm_mday;            // get day of month (1 to 31)
+            month = local->tm_mon + 1;       // get month of year (0 to 11)
+            year = local->tm_year + 1900;    // get year since 1900
+            sprintf(format_name,"%d-%02d-%02d_%02d:%02d:%02d", year, month, day, hours, minutes, seconds);
+        }
+        ```
+    2. Setelah mendapatkan nama directory, kami membuat child proses yang digunakan untuk membuat directory dengan fungsi `__makeFolder` yang terdapat pada fungsi `phrase_3a`:
+        ```c
+        void phrase_3a(char *folder_name){
+          __makeFolder(folder_name);
+        }
+       
+        void __makeFolder(char *folder_name) {
+          char *argv[] = {"mkdir", "-p", folder_name, NULL};
+          execv("/bin/mkdir", argv);
+        }
+        ```
+    3. Kemudian pada akhir while(1) kami sisipkan `sleep(40)` supaya program menunggu 40 detik untuk membuat directory yang baru.
 
 * ### 3b
   Soal 3b diminta untuk mengisi directory yang sudah dibuat pada soal 3a dengan 10 gambar dimana 1 gambar diunduh setiap 5 detik dengan tiap gambar diberi format nama timestamp [YYYY-mm-dd_HH:ii:ss] serta ukuran gambar (n%1000) + 50 pixel dimana n adalah detik Epoch Unix.
- 1. Langkah pertama tentusaja adalah membuat child proses yang bertujuan untuk mengunduh gambar, `phrase_3b` menyimpan seluruh source code untuk menyelesaikan soal 3b ini. 
- 2. Pada `phrase_3b` terdapat fungsi `downloadImage` yang berguna untuk mendownload image
-    ```c
-    void phrase_3b(char *folder_name) {
-      for (int j = 0; j < 10; j++) {
-        downloadImage(folder_name);
-        sleep(5);
-      }
-    }
-    ```
-    dan pada akhir for kami menyisipkan `sleep(5)` untuk menunggu selama 5 detik sebelum looping berikutnya.
- 3. Pada `downloadImage` kami membuat child proses yang berguna untuk mengeksekusi `wget` dalam pengunduhan gambar, kami juga melakukan passing argumen `folder_name` yang menyimpan nama directory untuk menyimpan gambar.
-    ```c
-    void downloadImage(char *folder_name) {
-      pid_t child_id2;
+    1. Langkah pertama tentusaja adalah membuat child proses yang bertujuan untuk mengunduh gambar, `phrase_3b` menyimpan seluruh source code untuk menyelesaikan soal 3b ini. 
+    2. Pada `phrase_3b` terdapat fungsi `downloadImage` yang berguna untuk mendownload image
+        ```c
+        void phrase_3b(char *folder_name) {
+          for (int j = 0; j < 10; j++) {
+            downloadImage(folder_name);
+            sleep(5);
+          }
+        }
+        ```
+        dan pada akhir for kami menyisipkan `sleep(5)` untuk menunggu selama 5 detik sebelum looping berikutnya.
+    3. Pada `downloadImage` kami membuat child proses yang berguna untuk mengeksekusi `wget` dalam pengunduhan gambar, kami juga melakukan passing argumen `folder_name` yang menyimpan nama directory untuk menyimpan gambar.
+        ```c
+        void downloadImage(char *folder_name) {
+          pid_t child_id2;
 
-      child_id2 = fork();
+          child_id2 = fork();
 
-      if (child_id2 < 0) {
-          exit(EXIT_FAILURE); // Jika gagal membuat proses baru, program akan berhenti
-      }
+          if (child_id2 < 0) {
+              exit(EXIT_FAILURE); // Jika gagal membuat proses baru, program akan berhenti
+          }
 
-      int status;
+          int status;
 
-      if (child_id2 == 0) {
-          // this is child
-          char size[5],download_link[1000],name[50];
-          ConstructDownloadLink(size, download_link, name);
-          char path[512];
-          sprintf(path, "%s/%s.jpg", folder_name,name);
-          char *argv[] = {"wget", "--no-check-certificate", "-q", download_link, "-O", path, NULL};
-          execv("/usr/bin/wget", argv);
+          if (child_id2 == 0) {
+              // this is child
+              char size[5],download_link[1000],name[50];
+              ConstructDownloadLink(size, download_link, name);
+              char path[512];
+              sprintf(path, "%s/%s.jpg", folder_name,name);
+              char *argv[] = {"wget", "--no-check-certificate", "-q", download_link, "-O", path, NULL};
+              execv("/usr/bin/wget", argv);
 
-      }
-    }
-    ```
- 4. Fungsi `ConstructDownloadLink` bertujuan untuk membuat download link pada variable `download_link` dan ukuran gambar yang diunduh bisa sesuai format yaitu (n%1000) + 50 pixel dimana n adalah detik Epoch Unix pada variable `size` serta nama dari file yang di download sesaui format yaitu timestamp [YYYY-mm-dd_HH:ii:ss] yang dimasukkan pada variable `name`
-    ```c
-    void ConstructDownloadLink(char *size ,char *link,char *name){
-        sprintf(size,"%d",(int)time(NULL)%1000+50); 
-        ConstructTimeNow(name);
-        sprintf(link,"https://picsum.photos/%s",size);
-    }
-    ```
- 5. Setelah link download terbentuk maka program akan menjalankan `wget`
-    ```c
-    char *argv[] = {"wget", "--no-check-certificate", "-q", download_link, "-O", path, NULL};
-    execv("/usr/bin/wget", argv);
-    ```
+          }
+        }
+        ```
+    4. Fungsi `ConstructDownloadLink` bertujuan untuk membuat download link pada variable `download_link` dan ukuran gambar yang diunduh bisa sesuai format yaitu (n%1000) + 50 pixel dimana n adalah detik Epoch Unix pada variable `size` serta nama dari file yang di download sesaui format yaitu timestamp [YYYY-mm-dd_HH:ii:ss] yang dimasukkan pada variable `name`
+        ```c
+        void ConstructDownloadLink(char *size ,char *link,char *name){
+            sprintf(size,"%d",(int)time(NULL)%1000+50); 
+            ConstructTimeNow(name);
+            sprintf(link,"https://picsum.photos/%s",size);
+        }
+        ```
+    5. Setelah link download terbentuk maka program akan menjalankan `wget`
+        ```c
+        char *argv[] = {"wget", "--no-check-certificate", "-q", download_link, "-O", path, NULL};
+        execv("/usr/bin/wget", argv);
+        ```
 
 * ### 3c
   Soal 3c meminta setelah directory diisi penuh oleh 10 gambar ditambahkan juga file status.txt yang isinya adalah string "Download Success" yang di enkripsi menggunakan caesar chiper dengan shift 5 dan directory tersebut di zip dan directory sebelumnya dihapus.
- 1. Solusi untuk memecahkan problem ini ada pada fungsi `phrase_3c` yang mana isinya adalah fungsi untuk membuat `status.txt` dan men zip lalu menghapus directory
-  ```c
-  void phrase_3c(char *folder_name) {
-      __makestatus(folder_name);
-      __zipping(folder_name);
-  }
-  ```
- 2. Pada `__makestatus` terjadi passing argumen yaitu `folder_name` yang mana adalah nama directory yang 
+    1. Solusi untuk memecahkan problem ini ada pada fungsi `phrase_3c` yang mana isinya adalah fungsi untuk membuat `status.txt` dan men zip lalu menghapus directory
+        ```c
+        void phrase_3c(char *folder_name) {
+            __makestatus(folder_name);
+            __zipping(folder_name);
+        }
+        ```
+    2. Pada `__makestatus` terjadi passing argumen yaitu `folder_name` yang mana adalah nama directory yang 
