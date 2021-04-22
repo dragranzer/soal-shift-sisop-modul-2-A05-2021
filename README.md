@@ -557,4 +557,36 @@ while (1) {
         }
         ```
 * ### 3e
-  Soal 3e meminta 
+  Soal 3e meminta program `soal3.c` bisa dijalankan dengan 2 mode, yang mana 2 mode tersebut dibedakan dengan argument yang diberikan `-x` atau `-z` yang membedakan kedua mode ini adalah jika `soal3.c` berjalan pada mode `-x` maka jika `Killer.sh` dijalankan akan menunggu proses hingga melakukan zip directory yang terakhir dibuat lalu berhenti, sedangkan pada mode `-z` jika `Killer.sh` dijalankan akan menghentikan semua proses yang berjalan saat itu juga.
+    1. Pada mode `-z` kami menggunakan fungsi `__killNow` dari nomor 3d untuk menghentikan semua proses saat itu juga
+        ```c
+        void __killNow(){
+          char dir[512];
+          sprintf(dir, "Killer.sh");
+          FILE *fptr = fopen(dir, "w");
+          if (fptr == NULL) {
+            exit(EXIT_FAILURE);
+          }
+
+          char text_to_write[50] = "#!/bin/bash\n\nkillall soal3\nrm Killer.sh";
+          fprintf(fptr, "%s", text_to_write);
+          fclose(fptr);
+        }
+        ```
+    2. Pada mode `-x` kami menggunakan fungsi baru yaitu `__smoothKill` yang mana hanya akan mengkill parent proses dari program utama yang tidak lain adalah while(1) pada daemon. Fungsi `__smoothKill` sendiri membutuhkan passing argument berupa pid dari program yang akan dihentikan.
+        ```c
+        void __smoothKill(int pid){
+            char dir[512];
+            sprintf(dir, "Killer.sh");
+            FILE *fptr = fopen(dir, "w");
+            if (fptr == NULL) {
+            exit(EXIT_FAILURE);
+            }
+
+            char text_to_write[50];
+            sprintf(text_to_write, "#!/bin/bash\n\nkill %d\nrm Killer.sh",pid);
+            fprintf(fptr, "%s", text_to_write);
+            fclose(fptr);
+        }
+        ```
+    3. 
