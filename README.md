@@ -589,4 +589,4 @@ while (1) {
             fclose(fptr);
         }
         ```
-    3. 
+    3. Argument di passing menuju program `soal3.c` menggunakan ``int main(int argc, char** argv)``
