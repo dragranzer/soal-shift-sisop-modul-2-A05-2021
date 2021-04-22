@@ -422,17 +422,63 @@ while (1) {
  
     a. `phrase_3a` :
     ```c
-      void phrase_3a(char *folder_name){
-        __makeFolder(folder_name);
-      }
+    void phrase_3a(char *folder_name){
+      __makeFolder(folder_name);
+    }
     ```
     b. `__makeFolder`:
     ```c
-      void __makeFolder(char *folder_name) {
-        char *argv[] = {"mkdir", "-p", folder_name, NULL};
-        execv("/bin/mkdir", argv);
-      }
+    void __makeFolder(char *folder_name) {
+      char *argv[] = {"mkdir", "-p", folder_name, NULL};
+      execv("/bin/mkdir", argv);
+    }
     ```
   3. Kemudian pada akhir while(1) kami sisipkan `sleep(40)` supaya program menunggu 40 detik untuk membuat directory yang baru.
-* ### 
+
+* ### 3b
+  Soal 3b diminta untuk mengisi directory yang sudah dibuat pada soal 3a dengan 10 gambar dimana 1 gambar diunduh setiap 5 detik dengan tiap gambar diberi format nama timestamp [YYYY-mm-dd_HH:ii:ss] serta ukuran gambar (n%1000) + 50 pixel dimana n adalah detik Epoch Unix.
+  1. Langkah pertama tentusaja adalah membuat child proses yang bertujuan untuk mengunduh gambar, `phrase_3b` menyimpan seluruh source code untuk menyelesaikan soal 3b ini. 
+  2. Pada `phrase_3b` terdapat fungsi `downloadImage` yang berguna untuk mendownload image
+    ```c
+    void phrase_3b(char *folder_name) {
+      for (int j = 0; j < 10; j++) {
+        downloadImage(folder_name);
+        sleep(5);
+      }
+    }
+    ```
+    dan pada akhir for kami menyisipkan `sleep(5)` untuk menunggu selama 5 detik sebelum looping berikutnya.
+  3. Pada `downloadImage` kami membuat child proses yang berguna untuk mengeksekusi `wget` dalam pengunduhan gambar, kami juga melakukan passing argumen `folder_name` yang menyimpan nama directory untuk menyimpan gambar.
+    ```c
+    void downloadImage(char *folder_name) {
+      pid_t child_id2;
+
+      child_id2 = fork();
+
+      if (child_id2 < 0) {
+          exit(EXIT_FAILURE); // Jika gagal membuat proses baru, program akan berhenti
+      }
+
+      int status;
+
+      if (child_id2 == 0) {
+          // this is child
+          char size[5],download_link[1000],name[50];
+          ConstructDownloadLink(size, download_link, name);
+          char path[512];
+          sprintf(path, "%s/%s.jpg", folder_name,name);
+          char *argv[] = {"wget", "--no-check-certificate", "-q", download_link, "-O", path, NULL};
+          execv("/usr/bin/wget", argv);
+
+      }
+    }
+    ```
+  4. Fungsi `ConstructDownloadLink` bertujuan untuk membuat download link pada variable `download_link` dan ukuran gambar yang diunduh bisa sesuai format yaitu (n%1000) + 50 pixel dimana n adalah detik Epoch Unix pada variable `size` serta nama dari file yang di download sesaui format yaitu timestamp [YYYY-mm-dd_HH:ii:ss] yang dimasukkan pada variable `name`
+    ```c
+    void ConstructDownloadLink(char *size ,char *link,char *name){
+        sprintf(size,"%d",(int)time(NULL)%1000+50); 
+        ConstructTimeNow(name);
+        sprintf(link,"https://picsum.photos/%s",size);
+    }
+    ```
 
