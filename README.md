@@ -509,7 +509,8 @@ while (1) {
         }
 
         ```
-    3 Enkripsi dilakukan dengan fungsi `encrypt` dengan shift 5
+    3 Enkripsi dilakukan dengan fungsi `encrypt` dengan shift 5.
+    
         ```c
         void encrypt(char *text, char *encrypted, int len)
         {
@@ -527,5 +528,14 @@ while (1) {
               encrypted[i] = ((text[i]+5-97)%26 +97);
           }
           encrypted[len] = '\0';
+        }
+        ```
+    4. Setelah file `status.txt` yang telah diisi dengan enkripsi dari "Download Success" dimasukkan pada directory, langkah selanjutnya adalah melakukan zip lalu menghapus directory menggunakan fungsi `__zipping`, fungsi `__zipping` juga membutuhkan passing argumen yaitu `folder_name` yang merupakan nama directory yang akan di zip.
+        ```c
+        void __zipping(char *folder_name){
+            char zippo[50];
+            sprintf(zippo, "%s.zip", folder_name);
+            char *argv[] = {"zip", "-qrm", zippo, folder_name, NULL};
+            execv("/bin/zip", argv);
         }
         ```
