@@ -385,7 +385,7 @@ Proses debugging ketika program tidak berjalan sesuai dengan keinginan lumayan k
 ## Soal 3
 * Soal 3 dikerjakan menggunakan daemon.
 * Tampilan pada while(1) daemon:
-```
+```c
 while (1) {
       char folder_name[50];
       ConstructTimeNow(folder_name);
