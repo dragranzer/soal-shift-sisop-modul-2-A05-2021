@@ -509,7 +509,7 @@ while (1) {
         }
 
         ```
-    3 Enkripsi dilakukan dengan fungsi `encrypt` dengan shift 5.
+    3. Enkripsi dilakukan dengan fungsi `encrypt` dengan shift 5.
     
         ```c
         void encrypt(char *text, char *encrypted, int len)
