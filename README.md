@@ -402,7 +402,7 @@ while (1) {
 * ### 3a
   Soal 3a diminta untuk membuat directory setiap 40 detik dengan format nama directory esuai timestamp [YYYY-mm-dd_HH:ii:ss].
   1. Pada langkah pertama kami membuat fungsi `ConstructTimeNow` yang digunakan untuk mendapatkan format waktu saat ini kemudian disimpan pada variable `folder_name`. Berikut isi dari fungsi `ConstructTimeNow`:
-  ```
+  ```c
   void ConstructTimeNow(char *format_name){
       int hours, minutes, seconds, day, month, year;
       time_t now;
@@ -420,13 +420,13 @@ while (1) {
   ```
   2. Setelah mendapatkan nama directory, kami membuat child proses yang digunakan untuk membuat directory dengan fungsi `__makeFolder` yang terdapat pada fungsi `phrase_3a`:
     a. `phrase_3a` :
-    ```
+    ```c
     void phrase_3a(char *folder_name){
       __makeFolder(folder_name);
     }
     ```
     b. `__makeFolder`:
-    ```
+    ```c
     void __makeFolder(char *folder_name) {
       char *argv[] = {"mkdir", "-p", folder_name, NULL};
       execv("/bin/mkdir", argv);
