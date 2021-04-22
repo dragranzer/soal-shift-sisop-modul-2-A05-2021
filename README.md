@@ -437,8 +437,8 @@ while (1) {
 
 * ### 3b
   Soal 3b diminta untuk mengisi directory yang sudah dibuat pada soal 3a dengan 10 gambar dimana 1 gambar diunduh setiap 5 detik dengan tiap gambar diberi format nama timestamp [YYYY-mm-dd_HH:ii:ss] serta ukuran gambar (n%1000) + 50 pixel dimana n adalah detik Epoch Unix.
-  1. Langkah pertama tentusaja adalah membuat child proses yang bertujuan untuk mengunduh gambar, `phrase_3b` menyimpan seluruh source code untuk menyelesaikan soal 3b ini. 
-  2. Pada `phrase_3b` terdapat fungsi `downloadImage` yang berguna untuk mendownload image
+ 1. Langkah pertama tentusaja adalah membuat child proses yang bertujuan untuk mengunduh gambar, `phrase_3b` menyimpan seluruh source code untuk menyelesaikan soal 3b ini. 
+ 2. Pada `phrase_3b` terdapat fungsi `downloadImage` yang berguna untuk mendownload image
     ```c
     void phrase_3b(char *folder_name) {
       for (int j = 0; j < 10; j++) {
@@ -448,7 +448,7 @@ while (1) {
     }
     ```
     dan pada akhir for kami menyisipkan `sleep(5)` untuk menunggu selama 5 detik sebelum looping berikutnya.
-  3. Pada `downloadImage` kami membuat child proses yang berguna untuk mengeksekusi `wget` dalam pengunduhan gambar, kami juga melakukan passing argumen `folder_name` yang menyimpan nama directory untuk menyimpan gambar.
+ 3. Pada `downloadImage` kami membuat child proses yang berguna untuk mengeksekusi `wget` dalam pengunduhan gambar, kami juga melakukan passing argumen `folder_name` yang menyimpan nama directory untuk menyimpan gambar.
     ```c
     void downloadImage(char *folder_name) {
       pid_t child_id2;
@@ -473,7 +473,7 @@ while (1) {
       }
     }
     ```
-  4. Fungsi `ConstructDownloadLink` bertujuan untuk membuat download link pada variable `download_link` dan ukuran gambar yang diunduh bisa sesuai format yaitu (n%1000) + 50 pixel dimana n adalah detik Epoch Unix pada variable `size` serta nama dari file yang di download sesaui format yaitu timestamp [YYYY-mm-dd_HH:ii:ss] yang dimasukkan pada variable `name`
+ 4. Fungsi `ConstructDownloadLink` bertujuan untuk membuat download link pada variable `download_link` dan ukuran gambar yang diunduh bisa sesuai format yaitu (n%1000) + 50 pixel dimana n adalah detik Epoch Unix pada variable `size` serta nama dari file yang di download sesaui format yaitu timestamp [YYYY-mm-dd_HH:ii:ss] yang dimasukkan pada variable `name`
     ```c
     void ConstructDownloadLink(char *size ,char *link,char *name){
         sprintf(size,"%d",(int)time(NULL)%1000+50); 
@@ -481,4 +481,19 @@ while (1) {
         sprintf(link,"https://picsum.photos/%s",size);
     }
     ```
+ 5. Setelah link download terbentuk maka program akan menjalankan `wget`
+    ```c
+    char *argv[] = {"wget", "--no-check-certificate", "-q", download_link, "-O", path, NULL};
+    execv("/usr/bin/wget", argv);
+    ```
 
+* ### 3c
+  Soal 3c meminta setelah directory diisi penuh oleh 10 gambar ditambahkan juga file status.txt yang isinya adalah string "Download Success" yang di enkripsi menggunakan caesar chiper dengan shift 5 dan directory tersebut di zip dan directory sebelumnya dihapus.
+ 1. Solusi untuk memecahkan problem ini ada pada fungsi `phrase_3c` yang mana isinya adalah fungsi untuk membuat `status.txt` dan men zip lalu menghapus directory
+  ```c
+  void phrase_3c(char *folder_name) {
+      __makestatus(folder_name);
+      __zipping(folder_name);
+  }
+  ```
+ 2. Pada `__makestatus` terjadi passing argumen yaitu `folder_name` yang mana adalah nama directory yang 
