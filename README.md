@@ -539,3 +539,22 @@ while (1) {
             execv("/bin/zip", argv);
         }
         ```
+* ### 3d
+  Soal 3d meminta `soal3.c` untuk membentuk program bash bernama `Killer.sh` yang jika dijalankan akan menghentikan `soal3.c` dan menghapus `Killer.sh` sendiri
+    1. Sebelum while(1) yang mana adalah program daemon, `soal3.c` akan membentuk program `Killer.sh` menggunakan fungsi `__killNow` yang mana didalamnya menggunakan comand `killall soal3` dan `rm Killer.sh`
+        ```c
+        void __killNow(){
+          char dir[512];
+          sprintf(dir, "Killer.sh");
+          FILE *fptr = fopen(dir, "w");
+          if (fptr == NULL) {
+            exit(EXIT_FAILURE);
+          }
+
+          char text_to_write[50] = "#!/bin/bash\n\nkillall soal3\nrm Killer.sh";
+          fprintf(fptr, "%s", text_to_write);
+          fclose(fptr);
+        }
+        ```
+* ### 3e
+  Soal 3e meminta 
