@@ -487,7 +487,7 @@ while (1) {
             __zipping(folder_name);
         }
         ```
-    2. Pada `__makestatus` terjadi passing argumen yaitu `folder_name` yang mana adalah nama directory yang isinya 10 gambar dan akan diisi dengan file `status.txt`. Setelah `status.txt` dibentuk kemudian akan diisi dengan enkripsi dari "Download Success".
+    2. Pada `__makestatus` terjadi passing argumen yaitu `folder_name` yang mana adalah nama directory yang isinya 10 gambar dan akan diisi dengan file `status.txt`. Setelah `status.txt` dibentuk kemudian akan diisi dengan enkripsi dari "Download Success" menggunakan fungsi `encrypt`.
         ```c
         void __makestatus(char *folder_name){
             char dir[512];
@@ -508,4 +508,24 @@ while (1) {
             fclose(fptr);
         }
 
+        ```
+    3 Enkripsi dilakukan dengan fungsi `encrypt` dengan shift 5
+        ```c
+        void encrypt(char *text, char *encrypted, int len)
+        {
+          len = min(strlen(text), len);
+
+          // traverse text
+          for (int i = 0; i < len; i++)
+          {
+            // apply transformation to each character
+            // Encrypt Uppercase letters
+            if (isupper(text[i]))
+              encrypted[i] = ((text[i]+5-65)%26 +65); 
+            else
+              // Encrypt Lowercase letters
+              encrypted[i] = ((text[i]+5-97)%26 +97);
+          }
+          encrypted[len] = '\0';
+        }
         ```
