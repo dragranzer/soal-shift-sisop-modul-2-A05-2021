@@ -573,7 +573,7 @@ while (1) {
           fclose(fptr);
         }
         ```
-    2. Pada mode `-x` kami menggunakan fungsi baru yaitu `__smoothKill` yang mana hanya akan mengkill parent proses dari program utama yang tidak lain adalah while(1) pada daemon. Fungsi `__smoothKill` sendiri membutuhkan passing argument berupa pid dari program yang akan dihentikan.
+    2. Pada mode `-x` kami menggunakan fungsi baru yaitu `__smoothKill` yang mana hanya akan mengkill parent proses dari program utama yang tidak lain adalah while(1) pada daemon sehingga tidak akan terjadi looping lagi setelah loop terakhir terjadi. Fungsi `__smoothKill` sendiri membutuhkan passing argument berupa pid dari program yang akan dihentikan.
         ```c
         void __smoothKill(int pid){
             char dir[512];
@@ -589,4 +589,9 @@ while (1) {
             fclose(fptr);
         }
         ```
-    3. Argument di passing menuju program `soal3.c` menggunakan ``int main(int argc, char** argv)``
+    3. Argument di passing menuju program `soal3.c` menggunakan ``int main(int argc, char** argv)`` kemudian sebelum while(1) terdapat percabangan untuk membuat `Killer.sh` pada tiap mode. `getpid()` digunakan untuk mendapatkan pid dari program parent atau daemon.
+        ```c
+        int pidParrent = (int)getpid();
+        if(strcmp(argv[1],"-z")==0)__killNow();
+        else if(strcmp(argv[1],"-x")==0)__smoothKill(pidParrent);
+        ```
