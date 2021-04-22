@@ -444,7 +444,7 @@ while (1) {
         }
         ```
         dan pada akhir for kami menyisipkan `sleep(5)` untuk menunggu selama 5 detik sebelum looping berikutnya.
-    3. Pada `downloadImage` kami membuat child proses yang berguna untuk mengeksekusi `wget` dalam pengunduhan gambar, kami juga melakukan passing argumen `folder_name` yang menyimpan nama directory untuk menyimpan gambar.
+    3. Pada `downloadImage` kami membuat child proses yang berguna untuk mengeksekusi `wget` dalam pengunduhan gambar, kami juga melakukan passing argumen `folder_name` yang menyimpan nama directory untuk menyimpan gambar. Pada fungsi `downloadImage` terdapat juga fungsi `ConstructDownloadLink` bertujuan untuk membentuk link download yang akan di eksekusi oleh `wget`.
         ```c
         void downloadImage(char *folder_name) {
           pid_t child_id2;
@@ -477,12 +477,7 @@ while (1) {
             sprintf(link,"https://picsum.photos/%s",size);
         }
         ```
-    5. Setelah link download terbentuk maka program akan menjalankan `wget`
-        ```c
-        char *argv[] = {"wget", "--no-check-certificate", "-q", download_link, "-O", path, NULL};
-        execv("/usr/bin/wget", argv);
-        ```
-
+        
 * ### 3c
   Soal 3c meminta setelah directory diisi penuh oleh 10 gambar ditambahkan juga file status.txt yang isinya adalah string "Download Success" yang di enkripsi menggunakan caesar chiper dengan shift 5 dan directory tersebut di zip dan directory sebelumnya dihapus.
     1. Solusi untuk memecahkan problem ini ada pada fungsi `phrase_3c` yang mana isinya adalah fungsi untuk membuat `status.txt` dan men zip lalu menghapus directory
@@ -492,4 +487,25 @@ while (1) {
             __zipping(folder_name);
         }
         ```
-    2. Pada `__makestatus` terjadi passing argumen yaitu `folder_name` yang mana adalah nama directory yang 
+    2. Pada `__makestatus` terjadi passing argumen yaitu `folder_name` yang mana adalah nama directory yang isinya 10 gambar dan akan diisi dengan file `status.txt`. Setelah `status.txt` dibentuk kemudian akan diisi dengan enkripsi dari "Download Success".
+        ```c
+        void __makestatus(char *folder_name){
+            char dir[512];
+            sprintf(dir, "%s/status.txt", folder_name);
+            FILE *fptr = fopen(dir, "w");
+            if (fptr == NULL) {
+              exit(EXIT_FAILURE);
+            }
+
+
+            char text_to_write[50] = "Download Success";
+
+            encrypt(text_to_write, text_to_write, strlen(text_to_write));
+            //printf("DEBUG: Menulis status.txt (Enkripsi: %s)\n", text_to_write);
+
+            fprintf(fptr, "%s", text_to_write);
+
+            fclose(fptr);
+        }
+
+        ```
