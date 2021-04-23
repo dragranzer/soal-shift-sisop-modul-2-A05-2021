@@ -615,3 +615,13 @@ while (1) {
   
   Berikut adalah isi dari file `status.txt` yaitu "Download Success" yang telah di enkripsi dengan shift 5
   ![Screenshot from 2021-04-23 09-55-39](https://user-images.githubusercontent.com/71221969/115811559-22824600-a41a-11eb-8550-ebf6726f0265.png)
+
+* ### Kesulitan
+  * Kesulitan dalam melakukan logika untuk menentukan letak fork() supaya parrent proses yaitu daemon dan child proses bisa berjalan berdampingan tanpa saling tunggu
+  * Belum terlalu familiar dengan melakukan perintah `wget` `mkdir` `zip` melalui program c, sehingga baru bisa selesai setelah beberapakali percobaan
+  * Kurang familiar juga dalam membuat file memalui program c
+  * Passing argument `folder_name` juga baru berjalan setelah beberapa kali run karena kesalahan logika
+
+* ### Referensi
+  * Stackoverflow
+  * https://www.techiedelight.com/print-current-date-and-time-in-c/ untuk get current time
