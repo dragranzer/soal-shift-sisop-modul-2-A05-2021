@@ -610,3 +610,8 @@ while (1) {
   Jika `soal3.c` berjalan pada mode `-x` maka ketika `Killer.sh` dijalankan, program akan tetap berjalan namun tidak akan melakukan looping atau tidak akan membentuk directory yang baru, sehinggahanya akan berhenti setelah semua directory yang telah dibuat ter zip
   ![Screenshot from 2021-04-23 00-11-32](https://user-images.githubusercontent.com/71221969/115811155-688ada00-a419-11eb-9433-f2e6bda4af81.png)
 
+  Berikut adalah isi dari zip file, terdapat 10 gambar yang sizenya berbeda menandakan ukuran pixel tiap gambar berbeda
+  ![Screenshot from 2021-04-22 23-23-33](https://user-images.githubusercontent.com/71221969/115811485-fe266980-a419-11eb-85eb-652d60bd936f.png)
+  
+  Berikut adalah isi dari file `status.txt` yaitu "Download Success" yang telah di enkripsi dengan shift 5
+  ![Screenshot from 2021-04-23 09-55-39](https://user-images.githubusercontent.com/71221969/115811559-22824600-a41a-11eb-8550-ebf6726f0265.png)
