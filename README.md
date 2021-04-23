@@ -603,3 +603,10 @@ while (1) {
         if(strcmp(argv[1],"-z")==0)__killNow();
         else if(strcmp(argv[1],"-x")==0)__smoothKill(pidParrent);
         ```
+* ### Screenshoot hasil run `soal3.c`
+  Jika `soal3.c` berjalan pada mode `-z` maka ketika `Killer.sh` dijalankan, program akan berhenti pada tengah tengah proses, sehingga masih ada directory yang belum ter zip
+  ![Screenshot from 2021-04-22 23-20-35](https://user-images.githubusercontent.com/71221969/115810811-c3700180-a418-11eb-878c-b488c067c603.png)
+  
+  Jika `soal3.c` berjalan pada mode `-x` maka ketika `Killer.sh` dijalankan, program akan tetap berjalan namun tidak akan melakukan looping atau tidak akan membentuk directory yang baru, sehinggahanya akan berhenti setelah semua directory yang telah dibuat ter zip
+  ![Screenshot from 2021-04-23 00-11-32](https://user-images.githubusercontent.com/71221969/115811155-688ada00-a419-11eb-9433-f2e6bda4af81.png)
+
