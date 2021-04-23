@@ -615,6 +615,9 @@ while (1) {
   
   Berikut adalah isi dari file `status.txt` yaitu "Download Success" yang telah di enkripsi dengan shift 5
   ![Screenshot from 2021-04-23 09-55-39](https://user-images.githubusercontent.com/71221969/115811559-22824600-a41a-11eb-8550-ebf6726f0265.png)
+  
+  Berikut adalah tampilan salah satu gambar yang telah di download
+  ![Screenshot from 2021-04-23 10-09-15](https://user-images.githubusercontent.com/71221969/115812726-0bdcee80-a41c-11eb-93ab-2e2db9c66db2.png)
 
 * ### Kesulitan
   * Kesulitan dalam melakukan logika untuk menentukan letak fork() supaya parrent proses yaitu daemon dan child proses yaitu proses untuk melakukan download image bisa berjalan berdampingan tanpa saling tunggu
