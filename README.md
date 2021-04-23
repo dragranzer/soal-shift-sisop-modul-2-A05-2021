@@ -382,6 +382,14 @@ Proses debugging ketika program tidak berjalan sesuai dengan keinginan lumayan k
   
   ![image](https://user-images.githubusercontent.com/43901559/115546535-5a30a700-a2cf-11eb-8532-fbf3920cd66c.png)
 
+* ### Kesulitan
+  * penggunaan `fork()` dan `execv()` cukup sulit dan seringkali behaviour programnya unexpected
+  * beberapa command bash (`rm`, `mkdir`, dst...) tidak bekerja sesuai yang diinginkan jika dijadikan `argv`-nya `execv()`
+  * munculnya infinite looping dan program stuck karena create child yang endless
+
+* ### Referensi
+  * Stackoverflow
+
 ## Soal 3
 * Soal 3 dikerjakan menggunakan daemon.
 * Tampilan pada while(1) daemon:
